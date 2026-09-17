@@ -6,7 +6,7 @@
 #      Play the game of Tic-Tac-Toe
 # 4. What was the hardest part? Be as specific as possible.
 #      Getting json data in the right way and transforming in a array. I had a hard time in the save_board file. 
-#      By mistake I was just saving an array for the board before I think about the solution that I used in line 52. 
+#      By mistake I was just saving an array for the board before I think about the solution that I used in line 52.
 # 5. How long did it take for you to complete the assignment?
 #      3-4 hours. 
 
@@ -71,8 +71,12 @@ def display_board(board):
 
 def is_x_turn(board):
     '''Determine whose turn it is.'''
+    
+    # Lets initialize 2 variables to count how many times each player already did.
     x_count = 0
     o_count = 0
+    
+    # Loop trough the board to get the count
     for item in board:
         
         if item == X:
@@ -80,6 +84,7 @@ def is_x_turn(board):
         elif item == O:
            o_count += 1
     
+    # "X" always starts, so player "O" will just play if has lees turns then "X"
     if x_count <= o_count:
         return X
     else:
