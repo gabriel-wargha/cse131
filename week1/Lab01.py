@@ -94,19 +94,23 @@ def play_game(board):
     '''Play the game of Tic-Tac-Toe.'''
     # Put game play code here. Return False when the user has indicated they are done.
     
+    # lets use keep_playing to know when stop our program.
     keep_playing = True
     while keep_playing: 
         display_board(board)
         choice = input(f"{is_x_turn(board)} > ")
         
+        # If user hits "q" we save the board, so when the program runs again, the board still the same.
         if choice == "q":
             save_board(filename, board)
             keep_playing = False
         
+        # We mark the option that user choose with "x" or "o" depending of who's turn it is.
         else:
             choice = int(choice)
             board[choice - 1] = is_x_turn(board)
             
+            # If the game is over we make the board empty again and display message.
             if(game_done(board, message=True)):
                 board = blank_board["board"]
                 save_board(filename, board)
