@@ -1,11 +1,12 @@
 import json
 
-# Check for file names
 def getFileName():
     file_name = input("Where is your board located: ")
     return file_name
 
 def read_board(file_name): 
+    ''' This function receives a file name as a parameter.
+        If file is available, gets the board, if file does not exist, prompt the suer for a new file '''
     done = False
     while not done:
         try: 
@@ -17,24 +18,23 @@ def read_board(file_name):
         except FileNotFoundError:
             print("File not found")
             file_name = getFileName()
-            
+    
 def display_board(board):
-    board_layout = f'''
-       A B C   D E F   G H I
-    1  {board[0][0]} {board[0][1]} {board[0][2]} | {board[0][3]} {board[0][4]} {board[0][5]} | {board[0][6]} {board[0][7]} {board[0][8]}
-    2  {board[1][0]} {board[1][1]} {board[1][2]} | {board[1][3]} {board[1][4]} {board[1][5]} | {board[1][6]} {board[1][7]} {board[1][8]}
-    3  {board[2][0]} {board[2][1]} {board[2][2]} | {board[2][3]} {board[2][4]} {board[2][5]} | {board[2][6]} {board[2][7]} {board[2][8]}
-      -------+-------+-------
-    4  {board[3][0]} {board[3][1]} {board[3][2]} | {board[3][3]} {board[3][4]} {board[3][5]} | {board[3][6]} {board[3][7]} {board[3][8]}
-    5  {board[4][0]} {board[4][1]} {board[4][2]} | {board[4][3]} {board[4][4]} {board[4][5]} | {board[4][6]} {board[4][7]} {board[4][8]}
-    6  {board[5][0]} {board[5][1]} {board[5][2]} | {board[5][3]} {board[5][4]} {board[5][5]} | {board[5][6]} {board[5][7]} {board[5][8]}
-      -------+-------+-------
-    7  {board[6][0]} {board[6][1]} {board[6][2]} | {board[6][3]} {board[6][4]} {board[6][5]} | {board[6][6]} {board[6][7]} {board[6][8]}
-    8  {board[7][0]} {board[7][1]} {board[7][2]} | {board[7][3]} {board[7][4]} {board[7][5]} | {board[7][6]} {board[7][7]} {board[7][8]}
-    9  {board[8][0]} {board[8][1]} {board[8][2]} | {board[8][3]} {board[8][4]} {board[8][5]} | {board[8][6]} {board[8][7]} {board[8][8]}
-    '''
-    print(board_layout)
-
+    '''This function receives a board as a parameter. Print the letters A to I as column names.
+       After that we have a loop that will display each line, this loop adds a line separator when row is 3 or 6.
+       Then, we loop trough each column to print the value of that board position. 
+       Finally it adds a specific separator after each value depending of the position of the value in the board'''
+    print("   A B C D E F G H I")
+    
+    for row in range(9):
+        if row == 3 or row == 6:
+            print("   -----+-----+-----") 
+        print(row + 1, " ", end='')
+        
+        for column in range(9):
+            separator = [' ', ' ', '|', ' ', ' ', '|', ' ', ' ', '\n']
+            print(board[row][column] if board[row][column] != 0 else ' ', end=separator[column])
+                      
 def write_board(board):
     '''Save the current game to a file.'''
     file_name = input("To file should we save the board: ")
@@ -44,10 +44,20 @@ def write_board(board):
         json.dump(board_dict, file)
     
 def get_positions():
+    ''' This functions prompt the user about a position in the board'''
+    
     input_positions = input("Specify a coordinate to edit or 'Q' to save and quit: ")
     return input_positions
 
 def valid_input(input):
+    '''This function was created to validate the input that we get in the user in the ge_positions function.
+       First we check if the input has a number and a letter.
+       After, we assign the letter and number using next method.
+       Then, we check that the input has exactly 2 digits. 
+       Then we check if letter and and number follow the requirements.
+       Finally if no fail on tests we return True'''
+    
+    
     letter_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "q"]
     
     have_a_number = any(char.isalpha() for char in input)
@@ -72,6 +82,7 @@ def valid_input(input):
     return True
 
 def transformInputNumbers(position):
+    '''This unction receives a position and transform the letter in the position parameter in a column and the number in a row.'''
     
     list_of_letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
     positions = []
@@ -90,6 +101,7 @@ def transformInputNumbers(position):
     return positions    
         
 def getNumber():
+    '''This function prompt the user for a number value and validates the result'''
     done = False
         
     while not done:
@@ -102,6 +114,7 @@ def getNumber():
                 print('Error: Invalid input, you need to type a number')
 
 def changeBoard(board, position, new_number):
+    '''This function receives the boards, the new position and new number and change the board based on that'''
     row = position[0] - 1
     column = position[1]
     
@@ -111,26 +124,33 @@ def changeBoard(board, position, new_number):
     return board
     
 def play_game(board):
+    '''The biggest function in the game.
+            Every round we get the positions, check if position is valid and if the suer wants to quit the game.
+            Then, if positions are not invalid we change the selected position value to the new number.'''
         
-        input = get_positions()
+    input = get_positions()
         
-        if input[0] == "Q":
-            print("Bye, let's keep playing letter")
-            write_board(board)
-            print("File saved!")
-            return True
+    if input[0] == "Q":
+        print("Bye, let's keep playing letter")
+        write_board(board)
+        print("File saved!")
+        return True
             
         
-        if not valid_input(input):
-            print(f"ERROR: Square {input} is invalid")
-            return False
-        
-        
-        positions = transformInputNumbers(input)
-        new_number = getNumber()
-        board = changeBoard(board, positions, new_number)
+    if not valid_input(input):
+        print(f"ERROR: Square {input} is invalid")
         return False
+        
+        
+    positions = transformInputNumbers(input)
+    new_number = getNumber()
+    board = changeBoard(board, positions, new_number)
+    return False
   
+def canPlaceNumber():
+    return True
+
+
 if __name__ == "__main__":
     
     done = False
