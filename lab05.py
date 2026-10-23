@@ -1,3 +1,14 @@
+# 1. Name:
+#      Gabriel Wargha
+# 2. Assignment Name:
+#      Lab 06 : Sudoku Program
+# 3. Assignment Description:
+#      Allow the user to play the Sudoku game
+# 4. What was the hardest part? Be as specific as possible.
+#      This week the hardest part was to figured out how to display hints
+# 5. How long did it take for you to complete the assignment?
+#      2 hours this week. Close 10 in total.
+
 import json
 
 def getFileName():
@@ -24,6 +35,7 @@ def display_board(board):
        After that we have a loop that will display each line, this loop adds a line separator when row is 3 or 6.
        Then, we loop trough each column to print the value of that board position. 
        Finally it adds a specific separator after each value depending of the position of the value in the board'''
+    print("")
     print("   A B C D E F G H I")
     
     for row in range(9):
@@ -46,11 +58,12 @@ def write_board(board):
 def get_positions():
     ''' This functions prompt the user about a position in the board'''
     
-    input_positions = input("Specify a coordinate to edit or 'Q' to save and quit: ")
+    input_positions = input("Specify a coordinate to edit or 'Q' to save and quit: \n")
     return input_positions
 
 def valid_input(input):
-    '''This function was created to validate the input that we get in the user in the ge_positions function.
+    '''This function was created to validate the input that we get in the user in the get_positions function
+       and if this position is available.
        First we check if the input has a number and a letter.
        After, we assign the letter and number using next method.
        Then, we check that the input has exactly 2 digits. 
@@ -103,7 +116,6 @@ def transformInputNumbers(position):
 def getNumber():
     '''This function prompt the user for a number value and validates the result'''
     done = False
-        
     while not done:
         try:
             number = int(input("Enter the a number between 1 and 9: "))         
@@ -119,7 +131,6 @@ def changeBoard(board, position, new_number):
     column = position[1]
     
     board[row][column] = new_number
-    print(board[row][column])
     
     return board
     
@@ -127,7 +138,6 @@ def play_game(board):
     '''The biggest function in the game.
             Every round we get the positions, check if position is valid and if the suer wants to quit the game.
             Then, if positions are not invalid we change the selected position value to the new number.'''
-        
     input = get_positions()
         
     if input[0] == "Q":
@@ -135,22 +145,83 @@ def play_game(board):
         write_board(board)
         print("File saved!")
         return True
-            
         
     if not valid_input(input):
         print(f"ERROR: Square {input} is invalid")
         return False
         
-        
     positions = transformInputNumbers(input)
+    
+    if not is_position_empty(board, positions):
+        print("This position already has a number")
+        return False
+    
+    showHint(board, positions)
     new_number = getNumber()
-    board = changeBoard(board, positions, new_number)
+    
+    if canPlaceNumber(board, new_number, positions): 
+        board = changeBoard(board, positions, new_number)
+    else:
+        print("Invalid input. Please try again!")
     return False
   
-def canPlaceNumber():
+def canPlaceNumber(board, number, positions):
+    '''Function to check everything that would break the games rules about placing number'''
+    row = positions[0] - 1 
+    column = positions[1]
+   
+     # No number equal new number in the same row.
+    for col in range(9):
+        if board[row][col] == number:
+            return False
+    
+    # No number equal new number in the same column.
+    for r in range(9):
+        if board[r][column] == number:
+            return False 
+    
+    # No number equal new number in the 3x3 grid
+    sub_grid_row_start = row - row % 3
+    sub_grid_column_start = column - column % 3
+    
+    for r in range(sub_grid_row_start, sub_grid_row_start + 2):
+        for col in range(sub_grid_column_start, sub_grid_column_start + 2):
+            if board[r][col] == number:
+                return False
+    
     return True
 
+def showHint(board, positions):
+   
+    done = False
+    
+    while not done:
+        want_hint = input("Print 'T' for a quick tip or 'K' to keep going: ")
+        if want_hint not in ["T", "K"]:
+            print("Invalid input")
+        
+        if want_hint == "K":
+            done = True
+            
+        elif want_hint == "T":
+            hints = []
+            for i in range(10):
+                if canPlaceNumber(board, i, positions):
+                    hints.append(i)
+            print(f"These are all possible numbers for this position {hints}")
+            done = True
+            
 
+def is_position_empty(board, positions):
+    '''This functions receives the board and the positions as a parameter and check if the position is empty'''
+    row = positions[0] - 1
+    column = positions[1]
+    
+    if not (board[row][column] != 0):
+        return True
+    
+    return False
+        
 if __name__ == "__main__":
     
     done = False
@@ -161,6 +232,9 @@ if __name__ == "__main__":
     while not done:
         display_board(board)
         done = play_game(board)
+        
+            
+    
             
         
     
