@@ -24,7 +24,7 @@ def test_validation_input_in_range():
 
 
 def test_lowest_value_possible():
-    assert(transformInputNumbers("A0")) == [1,0]
+    assert(transformInputNumbers("A1")) == [1,0]
     assert(transformInputNumbers("1A")) == [1,0]
    
 
