@@ -139,12 +139,17 @@ def play_game(board):
             Every round we get the positions, check if position is valid and if the suer wants to quit the game.
             Then, if positions are not invalid we change the selected position value to the new number.'''
     input = get_positions()
+    
+    if input is "":
+        print("Error, you need to type something")
+        return False
         
     if input[0] == "Q":
         print("Bye, let's keep playing letter")
         write_board(board)
         print("File saved!")
         return True
+     
         
     if not valid_input(input):
         print(f"ERROR: Square {input} is invalid")
@@ -184,14 +189,17 @@ def canPlaceNumber(board, number, positions):
     sub_grid_row_start = row - row % 3
     sub_grid_column_start = column - column % 3
     
-    for r in range(sub_grid_row_start, sub_grid_row_start + 2):
-        for col in range(sub_grid_column_start, sub_grid_column_start + 2):
+    for r in range(sub_grid_row_start, sub_grid_row_start +3):
+        for col in range(sub_grid_column_start, sub_grid_column_start + 3):
             if board[r][col] == number:
                 return False
     
     return True
 
 def showHint(board, positions):
+    '''This function receives a board and the positions. Ask if the user wants a tip.
+        If the user wants a tip, loop between 0-9 and add the possible numbers to a array
+        The output is just the array with the tips'''
    
     done = False
     
@@ -211,7 +219,6 @@ def showHint(board, positions):
             print(f"These are all possible numbers for this position {hints}")
             done = True
             
-
 def is_position_empty(board, positions):
     '''This functions receives the board and the positions as a parameter and check if the position is empty'''
     row = positions[0] - 1
