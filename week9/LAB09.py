@@ -10,7 +10,7 @@
 #     Claude taught me about this principle that would be better to use [0] * len(array) to create an array of the same size. 
 #      I read on the syllabus that we need to inform if we have any line that we got help, this line des = [0] * len(array) was the only one that I get help from Claude.
 # 5. How long did it take for you to complete the assignment?
-#      -total time in hours including reading the assignment and submitting the program-
+#      2h
 
 
 def sort(array):
@@ -69,3 +69,4 @@ def combine(source, destination, i_begin, i_begin_2, i_end_2):
 
 if __name__ == "__main__":
     print(sort([1, 5, 3, 4, 2, 34, 12]))
+
