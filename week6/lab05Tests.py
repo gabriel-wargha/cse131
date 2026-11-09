@@ -1,4 +1,4 @@
-from lab05 import transformInputNumbers, valid_input
+from week6.lab05 import transformInputNumbers, valid_input
 
 def test_validation_input_more_than_2():
     assert(valid_input("123")) == False

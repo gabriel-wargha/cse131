@@ -11,7 +11,7 @@
 
 import json
 
-def getFileName():
+def get_file_name():
     file_name = input("Where is your board located: ")
     return file_name
 
@@ -23,12 +23,13 @@ def read_board(file_name):
         try: 
             with open(file_name, "r", encoding='utf-8') as file:
                 data = json.load(file)
-                return data['board']
                 done = True
+                return data['board']
+                
             
         except FileNotFoundError:
             print("File not found")
-            file_name = getFileName()
+            file_name = get_file_name()
     
 def display_board(board):
     '''This function receives a board as a parameter. Print the letters A to I as column names.
@@ -71,10 +72,10 @@ def valid_input(input):
        Finally if no fail on tests we return True'''
     
     
-    letter_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "q"]
+    letter_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
     
-    have_a_number = any(char.isalpha() for char in input)
-    have_a_letter = any(char.isdigit() for char in input)
+    have_a_letter = any(char.isalpha() for char in input)
+    have_a_number = any(char.isdigit() for char in input)
     
     if not (have_a_letter and have_a_number):
             return False
@@ -94,7 +95,7 @@ def valid_input(input):
     
     return True
 
-def transformInputNumbers(position):
+def transform_input_umbers(position):
     '''This unction receives a position and transform the letter in the position parameter in a column and the number in a row.'''
     
     list_of_letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
@@ -103,7 +104,6 @@ def transformInputNumbers(position):
     row = 0
     
     for i in range(0, 2):
-        position[i]
         if not position[i].isdigit():
             if (position[i]).lower() in list_of_letters:
                 column = (list_of_letters.index(position[i].lower()))
@@ -113,7 +113,7 @@ def transformInputNumbers(position):
     positions.extend([row, column])
     return positions    
         
-def getNumber():
+def get_number():
     '''This function prompt the user for a number value and validates the result'''
     done = False
     while not done:
@@ -125,7 +125,7 @@ def getNumber():
         except ValueError:
                 print('Error: Invalid input, you need to type a number')
 
-def changeBoard(board, position, new_number):
+def change_board(board, position, new_number):
     '''This function receives the boards, the new position and new number and change the board based on that'''
     row = position[0] - 1
     column = position[1]
@@ -140,37 +140,37 @@ def play_game(board):
             Then, if positions are not invalid we change the selected position value to the new number.'''
     input = get_positions()
     
-    if input is "":
+    if input == "":
         print("Error, you need to type something")
         return False
         
-    if input[0] == "Q":
+    if len(input) > 2 and input[0] == "Q":
         print("Bye, let's keep playing letter")
         write_board(board)
         print("File saved!")
         return True
      
         
-    if not valid_input(input):
+    if not valid_input(input) and not "Q" in input:
         print(f"ERROR: Square {input} is invalid")
         return False
         
-    positions = transformInputNumbers(input)
+    positions = transform_input_umbers(input)
     
     if not is_position_empty(board, positions):
         print("This position already has a number")
         return False
     
-    showHint(board, positions)
-    new_number = getNumber()
+    show_hint(board, positions)
+    new_number = get_number()
     
-    if canPlaceNumber(board, new_number, positions): 
-        board = changeBoard(board, positions, new_number)
+    if can_place_number(board, new_number, positions): 
+        board = change_board(board, positions, new_number)
     else:
         print("Invalid input. Please try again!")
     return False
   
-def canPlaceNumber(board, number, positions):
+def can_place_number(board, number, positions):
     '''Function to check everything that would break the games rules about placing number'''
     row = positions[0] - 1 
     column = positions[1]
@@ -196,7 +196,7 @@ def canPlaceNumber(board, number, positions):
     
     return True
 
-def showHint(board, positions):
+def show_hint(board, positions):
     '''This function receives a board and the positions. Ask if the user wants a tip.
         If the user wants a tip, loop between 0-9 and add the possible numbers to a array
         The output is just the array with the tips'''
@@ -214,7 +214,7 @@ def showHint(board, positions):
         elif want_hint == "T":
             hints = []
             for i in range(10):
-                if canPlaceNumber(board, i, positions):
+                if can_place_number(board, i, positions):
                     hints.append(i)
             print(f"These are all possible numbers for this position {hints}")
             done = True
@@ -233,7 +233,7 @@ if __name__ == "__main__":
     
     done = False
     
-    file_name = getFileName()
+    file_name = get_file_name()
     board = read_board(file_name)
     
     while not done:
